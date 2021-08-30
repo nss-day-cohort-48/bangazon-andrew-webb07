@@ -12,8 +12,6 @@ def null_orders(request):
         with sqlite3.connect(Connection.db_path) as conn:
             conn.row_factory = sqlite3.Row
             db_cursor = conn.cursor()
-
-            # Query for all games, with related user info.
             db_cursor.execute("""
                 SELECT bangazonapi_order.id AS order_id, 
                 SUM(bangazonapi_product.price) AS total_price, 
