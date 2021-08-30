@@ -1,4 +1,4 @@
-"""Module for generating games by user report"""
+"""Module for generating favorites by user report"""
 import sqlite3
 from django.shortcuts import render
 from bangazonapi.models import Favorite
