@@ -6,6 +6,12 @@
 
 SELECT order.id, user.first_name || " " || user.last_name AS user.full_name, SUM(product.price)
 FROM Order
-JOIN 
-
+JOIN OrderProduct
+ON OrderProduct.order_id = order.id
+JOIN Product
+ON Product.id = OrderProduct.product_id
 WHERE order.payment_type_id = "NULL"
+GROUP BY order.payment_type_id
+
+select *
+from order
