@@ -24,7 +24,7 @@ def null_orders(request):
                 JOIN auth_user
                 ON auth_user.id = bangazonapi_Order.customer_id
                 WHERE bangazonapi_order.payment_type_id IS NULL
-                GROUP BY auth_user.first_name
+                GROUP BY bangazonapi_order.id
             """)
 
             dataset = db_cursor.fetchall()
