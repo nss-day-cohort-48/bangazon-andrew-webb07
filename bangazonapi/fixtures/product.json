@@ -1498,5 +1498,20 @@
             "location": "Sison",
             "image_path": ""
         }
+    },
+    {
+        "model": "bangazonapi.product",
+        "pk": 101,
+        "fields": {
+            "name": "Saturn",
+            "customer_id": 4,
+            "price": 15000.51,
+            "description": "2017 Saturn",
+            "quantity": 1,
+            "created_date": "2019-06-28",
+            "category_id": 2,
+            "location": "Sison",
+            "image_path": ""
+        }
     }
 ]
