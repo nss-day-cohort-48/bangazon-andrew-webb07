@@ -8,7 +8,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
-from bangazonapi.models import Product, Customer, ProductCategory, ProductLike
+from bangazonapi.models import Product, Customer, ProductCategory, ProductLike, Rating
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.parsers import MultiPartParser, FormParser
 
@@ -28,6 +28,12 @@ class ProductLikeSerializer(serializers.ModelSerializer):
         model = ProductLike
         fields = ('id', 'product')
         depth = 2
+
+class ProductRatingSerializer(serializers.ModelSerializer):
+    """JSON serializer for product ratings"""
+    class Meta:
+        model = Rating
+        fields = ('id', 'customer','product', 'score')
 
 
 class Products(ViewSet):
@@ -343,4 +349,15 @@ class Products(ViewSet):
         product_likes = ProductLike.objects.filter(customer=customer)
 
         serializer = ProductLikeSerializer(product_likes, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @action(methods=['post',], detail=True)
+    def rate_product(self, request, pk=None):
+        rating = Rating()
+        rating.customer = Customer.objects.get(user=request.auth.user)
+        rating.product = Product.objects.get(pk=pk)
+        rating.score = request.data["score"]
+        rating.save()
+
+        serializer = ProductRatingSerializer(rating, many=False, context={'request': request})
         return Response(serializer.data)
