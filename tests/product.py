@@ -130,7 +130,6 @@ class ProductTests(APITestCase):
         product.price = 537.51
         product.description = "2012 Chevy"
         product.quantity = 1
-        # product.created_date = "2019-01-28"
         product.category_id = 1
         product.location = "Sison"
         product.image_path = ""
@@ -148,13 +147,10 @@ class ProductTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(json_response["name"], product.name)
-        # self.assertEqual(json_response["customer_id"], 1)
         self.assertEqual(json_response["price"], product.price)
         self.assertEqual(json_response["description"], product.description)
         self.assertEqual(json_response["quantity"], product.quantity)
         self.assertEqual(json_response["created_date"], "2021-09-02")
-        # self.assertEqual(json_response["category_id"], 1)
         self.assertEqual(json_response["location"], product.location)
         self.assertEqual(json_response["image_path"], None)
-        # self.assertEqual(json_response["can_be_rated"], True)
         self.assertEqual(json_response["average_rating"], product.average_rating)
