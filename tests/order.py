@@ -63,6 +63,7 @@ class OrderTests(APITestCase):
         json_response = json.loads(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        self.assertEqual(json_response["payment_type"], "http://testserver/paymenttypes/1")
         self.assertEqual(json_response["created_date"], "2021-08-01")
 
     def test_add_product_to_order(self):
