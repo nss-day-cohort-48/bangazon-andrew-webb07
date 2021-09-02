@@ -86,6 +86,7 @@ class OrderTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(json_response["id"], 1)
+        self.assertEqual(json_response["payment_type"], None)
         self.assertEqual(json_response["size"], 1)
         self.assertEqual(len(json_response["lineitems"]), 1)
 
