@@ -1,6 +1,7 @@
 import json
 from rest_framework import status
 from rest_framework.test import APITestCase
+from bangazonapi.models import Payment, Order
 
 
 class OrderTests(APITestCase):
@@ -29,6 +30,41 @@ class OrderTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        payment_type = Payment()
+        payment_type.merchant_name = "Visa"
+        payment_type.account_number = "121212121"
+        payment_type.customer_id = 1
+        payment_type.expiration_date = "2023-01-01"
+        payment_type.create_date = "2021-09-01"
+        payment_type.save()
+
+    def test_change_order(self):
+        """
+        Ensure we can change an existing order.
+        """
+        order = Order()
+        order.customer_id = 1
+        order.payment_type_id = 1
+        order.created_date = "2021-09-01"
+        order.save()
+
+        data = {
+            "customer": 1,
+            "payment_type": 1,
+            "created_date": "2021-08-01"
+        }
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        response = self.client.put(f"/orders/{order.id}", data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        # Get Order again to verify changes
+        response = self.client.get(f"/orders/{order.id}")
+        json_response = json.loads(response.content)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(json_response["payment_type"], "http://testserver/paymenttypes/1")
+        self.assertEqual(json_response["created_date"], "2021-08-01")
 
     def test_add_product_to_order(self):
         """

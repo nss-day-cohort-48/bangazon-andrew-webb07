@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from bangazonapi.models import Order, Payment, Customer, Product, OrderProduct
 from .product import ProductSerializer
+import os
 
 
 class OrderLineItemSerializer(serializers.HyperlinkedModelSerializer):
@@ -36,6 +37,7 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
             lookup_field='id'
         )
         fields = ('id', 'url', 'created_date', 'payment_type', 'customer', 'lineitems')
+        # depth = 1
 
 
 class Orders(ViewSet):
@@ -105,6 +107,7 @@ class Orders(ViewSet):
         customer = Customer.objects.get(user=request.auth.user)
         order = Order.objects.get(pk=pk, customer=customer)
         order.payment_type = Payment.objects.get(pk=request.data["payment_type"])
+        order.created_date = request.data["created_date"] 
         order.save()
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
