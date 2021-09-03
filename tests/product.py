@@ -2,7 +2,7 @@ import json
 import datetime
 from rest_framework import status
 from rest_framework.test import APITestCase
-from bangazonapi.models import Product, ProductCategory
+from bangazonapi.models import Product, Rating
 
 
 class ProductTests(APITestCase):
@@ -120,4 +120,37 @@ class ProductTests(APITestCase):
         response = self.client.get(f"/products/{product.id}")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    # TODO: Product can be rated. Assert average rating exists.
+    def test_rating_product(self):
+        """
+        Ensure we can add a rating to a product and the average rating exists
+        """
+        product = Product()
+        product.name = "Equinox"
+        product.customer_id = 1
+        product.price = 537.51
+        product.description = "2012 Chevy"
+        product.quantity = 1
+        product.category_id = 1
+        product.location = "Sison"
+        product.image_path = ""
+        product.can_be_rated = True
+        product.save()
+
+        rating = Rating()
+        rating.customer_id = 1
+        rating.product_id = 1
+        rating.score = 3
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        response = self.client.get(f"/products/{product.id}")
+        json_response = json.loads(response.content)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(json_response["name"], product.name)
+        self.assertEqual(json_response["price"], product.price)
+        self.assertEqual(json_response["description"], product.description)
+        self.assertEqual(json_response["quantity"], product.quantity)
+        self.assertEqual(json_response["created_date"], "2021-09-02")
+        self.assertEqual(json_response["location"], product.location)
+        self.assertEqual(json_response["image_path"], None)
+        self.assertEqual(json_response["average_rating"], product.average_rating)
